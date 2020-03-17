@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // ISSUES IN THIS FUNCTION
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch(requestCode) {
