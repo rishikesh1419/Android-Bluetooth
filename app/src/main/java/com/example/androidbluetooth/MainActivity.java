@@ -46,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
         btAdap = BluetoothAdapter.getDefaultAdapter();
 
         if(btAdap == null) {
-            btStatusTv.setText("Bluetooth Unavailable.");
+            btStatusTv.setText("Bluetooth Driver Unavailable.");
         }
         else {
-            btStatusTv.setText("Bluetooth Available.");
+            btStatusTv.setText("Bluetooth Driver Available.");
         }
 
         if(btAdap.isEnabled()) {
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     showToast("Bluetooth enabled already!");
+                    btIv.setImageResource(R.drawable.ic_action_on);
                 }
             }
         });
@@ -78,11 +79,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(btAdap.isEnabled()) {
+                    btAdap.disable();
                     showToast("Turning off...");
                     btIv.setImageResource(R.drawable.ic_action_off);
+                    devicesTv.setText(null);
                 }
                 else {
                     showToast("Bluetooth disabled already!");
+                    btIv.setImageResource(R.drawable.ic_action_off);
                 }
             }
         });
@@ -90,11 +94,20 @@ public class MainActivity extends AppCompatActivity {
         discBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if(!btAdap.isDiscovering()) {
-                    showToast("Making device discoverable...");
-                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                    startActivityForResult(intent,REQUEST_DISCOVER_BT);
+                if(btAdap.isEnabled()) {
+                    if(!btAdap.cancelDiscovery()) {
+                        showToast("Making device discoverable...");
+                        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                        startActivityForResult(intent,REQUEST_DISCOVER_BT);
+                    }
+                    else {
+                        showToast("Device discoverable already!");
+                    }
                 }
+                else {
+                    showToast("Enable bluetooth first!");
+                }
+
             }
         });
 
@@ -121,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch(requestCode) {
             case REQUEST_ENABLE_BT:
-                if(requestCode == RESULT_OK) {
+                if(resultCode == RESULT_OK) {
                     btIv.setImageResource(R.drawable.ic_action_on);
                     showToast("Bluetooth enabled.");
                 }
