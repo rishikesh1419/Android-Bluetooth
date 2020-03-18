@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     devicesTv.setText("Paired Devices");
                     Set<BluetoothDevice> devices = btAdap.getBondedDevices();
                     for(BluetoothDevice device:devices) {
-                        devicesTv.append("\nDevice: " + device.getName() + "," + device);
+                        devicesTv.append("\nDevice: " + device.getName() + ", Address- " + device);
                     }
                 }
                 else {
